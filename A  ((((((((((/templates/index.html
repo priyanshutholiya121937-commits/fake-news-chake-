@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}TruthCheck AI - AI Fake News Detection System{% endblock %}
+
+{% block content %}
+<main class="hero">
+  <!-- Trust Row -->
+  <div class="trust-row anim" style="--d: 0.05s">
+    <div class="trust-avatar">
+      <div class="trust-avatar-inner">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+    </div>
+    <div class="trust-avatar">
+      <div class="trust-avatar-inner">
+        <i class="fa-solid fa-brain"></i>
+      </div>
+    </div>
+    <div class="trust-avatar">
+      <div class="trust-avatar-inner">
+        <i class="fa-solid fa-camera-retro"></i>
+      </div>
+    </div>
+    <div class="trust-pill">AI Verification • 96.8% Accuracy</div>
+  </div>
+
+  <!-- Headline -->
+  <h1 class="headline">
+    <span class="headline-line" style="--d: 0.12s">Detect Fake News</span>
+    <span class="headline-line" style="--d: 0.28s">With Machine Learning</span>
+  </h1>
+
+  <!-- Subhead -->
+  <p class="subhead anim" style="--d: 0.25s">
+    Check news articles or scan a news photo using advanced OCR and machine learning.
+  </p>
+
+  <!-- Hero CTA Buttons -->
+  <div class="hero-actions anim-pulse" style="--d: 0.35s">
+    <a href="{{ url_for('text_check') }}" class="cta-btn">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <span>Check News Text</span>
+    </a>
+    <a href="{{ url_for('image_scanner') }}" class="cta-btn-secondary">
+      <i class="fa-solid fa-camera"></i>
+      <span>Scan News Photo</span>
+    </a>
+  </div>
+
+  <!-- Feature Cards Grid -->
+  <div class="features-grid anim" style="--d: 0.45s">
+    <a href="{{ url_for('text_check') }}" class="feature-card">
+      <div class="feature-icon-box">
+        <i class="fa-solid fa-robot"></i>
+      </div>
+      <h3 class="feature-title">AI Analysis</h3>
+      <p class="feature-desc">Machine-learning based text classification trained on multi-source datasets with TF-IDF vectorization.</p>
+    </a>
+
+    <a href="{{ url_for('image_scanner') }}" class="feature-card">
+      <div class="feature-icon-box">
+        <i class="fa-solid fa-image"></i>
+      </div>
+      <h3 class="feature-title">Image OCR</h3>
+      <p class="feature-desc">Extract news text directly from photographs or newspapers using OpenCV and high-precision OCR.</p>
+    </a>
+
+    <a href="{{ url_for('history') }}" class="feature-card">
+      <div class="feature-icon-box">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+      </div>
+      <h3 class="feature-title">Scan History</h3>
+      <p class="feature-desc">Keep track of previous analyses, search past records, and audit veracity confidence metrics.</p>
+    </a>
+  </div>
+</main>
+{% endblock %}

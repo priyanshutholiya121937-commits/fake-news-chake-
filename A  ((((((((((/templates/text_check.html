@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Check News Text - TruthCheck AI{% endblock %}
+{% block page_class %}scrollable{% endblock %}
+
+{% block content %}
+<div class="main-content-container anim" style="--d: 0.1s">
+  <div class="glass-card">
+    <div class="card-header">
+      <h2 class="card-title">
+        <i class="fa-solid fa-file-lines" style="color: #ffffff; font-size: 22px;"></i>
+        <span>Check News Text</span>
+      </h2>
+      <p class="card-subtitle">
+        Enter a news headline, article excerpt, or full statement to analyze its veracity with our machine learning classification engine.
+      </p>
+    </div>
+
+    <!-- Quick Sample Buttons -->
+    <div class="quick-samples">
+      <span class="sample-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Try Sample:</span>
+      <button type="button" class="sample-btn" onclick="fillSample('real')">
+        <i class="fa-solid fa-circle-check" style="color: var(--real-color);"></i> Real News (NASA)
+      </button>
+      <button type="button" class="sample-btn" onclick="fillSample('fake')">
+        <i class="fa-solid fa-circle-exclamation" style="color: var(--fake-color);"></i> Fake News (Miracle Hoax)
+      </button>
+    </div>
+
+    <!-- Submission Form -->
+    <form action="{{ url_for('analyze_text') }}" method="POST" id="text-check-form">
+      <div class="form-group">
+        <label for="headline" class="form-label">Headline (Optional)</label>
+        <input
+          type="text"
+          id="headline"
+          name="headline"
+          class="form-input"
+          placeholder="e.g., Federal Reserve Holds Benchmark Interest Rates..."
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="article_text" class="form-label">News Article / Statement Content *</label>
+        <textarea
+          id="article_text"
+          name="article_text"
+          class="form-textarea"
+          placeholder="Paste your news article or headline here..."
+          required
+        ></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="analyze-submit-btn">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Analyze News</span>
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const form = document.getElementById('text-check-form');
+  const submitBtn = document.getElementById('analyze-submit-btn');
+  if (form && submitBtn) {
+    form.addEventListener('submit', () => {
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i><span>Analyzing with ML Model...</span>';
+      submitBtn.disabled = true;
+    });
+  }
+</script>
+{% endblock %}

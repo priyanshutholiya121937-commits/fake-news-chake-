@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}TruthCheck AI - AI Fake News Detection{% endblock %}</title>
+    <meta
+      name="description"
+      content="AI-powered news verification at your fingertips. Check articles or scan news photos with OCR and Machine Learning."
+    />
+    <meta property="og:title" content="TruthCheck AI - Intelligence Designed To Verify" />
+    <meta
+      property="og:description"
+      content="Detect fake news with advanced NLP, TF-IDF, Machine Learning models and OCR camera scanning."
+    />
+    <meta property="og:type" content="website" />
+
+    <!-- Google Fonts: Inter (400, 500, 600, 700) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- OnlineWebFonts: BubbledotICG-FinePos (retro dot-matrix) -->
+    <link
+      href="https://db.onlinewebfonts.com/c/8cb707a9b8a73f8a7403336b861c3074?family=BubbledotICG-FinePos"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome 6.5.2 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <!-- Background Cover Video & Ambient Glow -->
+    <div class="bg">
+      <video class="bg-video" autoplay muted loop playsinline>
+        <source
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260809_012548_ef22562c-c0ae-4816-ad9d-f8922af4e6a7.mp4"
+          type="video/mp4"
+        />
+      </video>
+      <div class="bg-overlay"></div>
+    </div>
+
+    <!-- Main Single Viewport / Scrollable Container -->
+    <div class="page {% block page_class %}{% endblock %}">
+      <!-- 1. Header Navigation -->
+      <header class="header">
+        <a href="{{ url_for('index') }}" class="logo-btn" aria-label="TruthCheck AI Home">
+          <img src="{{ url_for('static', filename='images/logo.webp') }}" alt="TruthCheck AI" width="52" height="52" class="logo-img" />
+        </a>
+
+        <nav class="nav-pill">
+          <a href="{{ url_for('index') }}" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
+          <a href="{{ url_for('text_check') }}" class="nav-link {% if active_page == 'text_check' %}active{% endif %}">Check Text</a>
+          <a href="{{ url_for('image_scanner') }}" class="nav-link {% if active_page == 'scan_news' %}active{% endif %}">Scan News</a>
+          <a href="{{ url_for('history') }}" class="nav-link {% if active_page == 'history' %}active{% endif %}">History</a>
+          <a href="{{ url_for('about') }}" class="nav-link {% if active_page == 'about' %}active{% endif %}">About</a>
+        </nav>
+
+        <a href="{{ url_for('image_scanner') }}" class="header-action">
+          <i class="fa-solid fa-camera"></i>
+          <span>Scan Photo</span>
+        </a>
+
+        <button
+          class="burger-btn"
+          id="burger-btn"
+          aria-label="Toggle navigation menu"
+          aria-expanded="false"
+        >
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+          <span class="burger-bar"></span>
+        </button>
+      </header>
+
+      <!-- Flash Notification Container -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container">
+            {% for category, message in messages %}
+              <div class="flash-alert {{ category }}">
+                <i class="fa-solid {% if category == 'error' %}fa-circle-exclamation{% elif category == 'warning' %}fa-triangle-exclamation{% else %}fa-circle-check{% endif %}"></i>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Main Page Block -->
+      {% block content %}{% endblock %}
+
+      <!-- Page Footer -->
+      {% block footer %}
+      <footer class="stats" style="margin-top: auto;">
+        <div class="stat-item anim" style="--d: 0.35s">
+          <div class="stat-value-row">
+            <span class="stat-icon">&lt;</span>
+            <span class="stat-value">
+              <span class="stat-number" data-target="120" data-decimals="0">0</span>
+              <span class="stat-suffix">ms</span>
+            </span>
+          </div>
+          <span class="stat-label">Inference Time</span>
+        </div>
+
+        <div class="stat-item anim" style="--d: 0.42s">
+          <div class="stat-value-row">
+            <span class="stat-icon">%</span>
+            <span class="stat-value">
+              <span class="stat-number" data-target="96.77" data-decimals="2">0.00</span>
+              <span class="stat-suffix">%</span>
+            </span>
+          </div>
+          <span class="stat-label">Model Accuracy</span>
+        </div>
+
+        <div class="stat-item anim" style="--d: 0.49s">
+          <div class="stat-value-row">
+            <span class="stat-icon">*</span>
+            <span class="stat-value">
+              <span class="stat-number" data-target="24" data-decimals="0">0</span>
+              <span class="stat-suffix">/7</span>
+            </span>
+          </div>
+          <span class="stat-label">Real-Time Verification</span>
+        </div>
+
+        <div class="stat-item anim" style="--d: 0.56s">
+          <div class="stat-value-row">
+            <span class="stat-icon">#</span>
+            <span class="stat-value">
+              <span class="stat-number" data-target="50" data-decimals="0">0</span>
+              <span class="stat-suffix">k+</span>
+            </span>
+          </div>
+          <span class="stat-label">Articles Analyzed</span>
+        </div>
+      </footer>
+      {% endblock %}
+    </div>
+
+    <!-- Mobile Drawer & Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay" hidden></div>
+    <div class="mobile-menu" id="mobile-menu" hidden>
+      <a href="{{ url_for('index') }}" class="mobile-nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
+      <a href="{{ url_for('text_check') }}" class="mobile-nav-link {% if active_page == 'text_check' %}active{% endif %}">Check Text</a>
+      <a href="{{ url_for('image_scanner') }}" class="mobile-nav-link {% if active_page == 'scan_news' %}active{% endif %}">Scan News</a>
+      <a href="{{ url_for('history') }}" class="mobile-nav-link {% if active_page == 'history' %}active{% endif %}">History</a>
+      <a href="{{ url_for('about') }}" class="mobile-nav-link {% if active_page == 'about' %}active{% endif %}">About</a>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

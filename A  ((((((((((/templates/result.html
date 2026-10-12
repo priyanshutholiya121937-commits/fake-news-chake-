@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Verification Result - TruthCheck AI{% endblock %}
+{% block page_class %}scrollable{% endblock %}
+
+{% block content %}
+<div class="main-content-container anim" style="--d: 0.1s">
+  <div class="glass-card">
+    
+    <!-- Prediction Banner Card -->
+    {% set pred_lower = prediction.lower() %}
+    <div class="result-badge-card {% if 'real' in pred_lower %}real{% elif 'fake' in pred_lower %}fake{% else %}uncertain{% endif %}">
+      
+      <div class="prediction-pill {% if 'real' in pred_lower %}real{% elif 'fake' in pred_lower %}fake{% else %}uncertain{% endif %}">
+        {% if 'real' in pred_lower %}
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Likely Real News</span>
+        {% elif 'fake' in pred_lower %}
+          <i class="fa-solid fa-circle-xmark"></i>
+          <span>Likely Fake News</span>
+        {% else %}
+          <i class="fa-solid fa-circle-question"></i>
+          <span>Uncertain / Inconclusive</span>
+        {% endif %}
+      </div>
+
+      <div class="confidence-display">
+        {{ confidence }}%
+      </div>
+      <p style="font-size: 13.5px; color: #e5e7eb; font-weight: 500;">
+        Model Confidence Score
+      </p>
+
+      <!-- Progress Meter -->
+      <div class="confidence-bar-bg">
+        <div
+          class="confidence-bar-fill {% if 'real' in pred_lower %}real{% elif 'fake' in pred_lower %}fake{% else %}uncertain{% endif %}"
+          style="width: {{ confidence }}%;"
+        ></div>
+      </div>
+
+      <p class="disclaimer-note">
+        <i class="fa-solid fa-circle-info"></i>
+        Confidence represents the statistical model's linguistic pattern classification, not absolute legal proof of factual truth.
+      </p>
+    </div>
+
+    <!-- Metadata Grid -->
+    <div class="meta-grid">
+      <div class="meta-box">
+        <div class="meta-box-label">Classification Model</div>
+        <div class="meta-box-value">{{ model_used }}</div>
+      </div>
+
+      <div class="meta-box">
+        <div class="meta-box-label">Input Source</div>
+        <div class="meta-box-value">{{ input_type }}</div>
+      </div>
+
+      <div class="meta-box">
+        <div class="meta-box-label">Timestamp</div>
+        <div class="meta-box-value">{{ timestamp }}</div>
+      </div>
+
+      <div class="meta-box">
+        <div class="meta-box-label">Record Reference</div>
+        <div class="meta-box-value">ID #{{ scan_id }} (Stored in SQLite)</div>
+      </div>
+    </div>
+
+    <!-- Text Analyzed / OCR Extracted Box -->
+    <div class="form-group" style="margin-top: 24px;">
+      <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>
+          <i class="fa-solid fa-quote-left" style="color: var(--muted); margin-right: 6px;"></i>
+          {% if extracted_text %}Extracted OCR Text{% else %}Analyzed Article Content{% endif %}
+        </span>
+        <span style="font-size: 12px; color: var(--muted);">
+          {{ (extracted_text or original_text or '').split()|length }} words
+        </span>
+      </label>
+      <div class="text-preview-box">
+        {{ extracted_text or original_text }}
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="hero-actions" style="margin-top: 28px;">
+      <a href="{{ url_for('text_check') }}" class="cta-btn">
+        <i class="fa-solid fa-plus"></i>
+        <span>Check Another Article</span>
+      </a>
+      <a href="{{ url_for('image_scanner') }}" class="cta-btn-secondary">
+        <i class="fa-solid fa-camera"></i>
+        <span>Scan Photo</span>
+      </a>
+      <a href="{{ url_for('history') }}" class="cta-btn-secondary">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>View in History</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
