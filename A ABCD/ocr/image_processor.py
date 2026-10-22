@@ -1,6 +1,7 @@
 import os
 import re
 import cv2
+import shutil
 import numpy as np
 from PIL import Image
 from typing import Tuple, Dict, Any
@@ -134,3 +135,14 @@ def extract_text_from_image(image_path: str) -> Dict[str, Any]:
             "message": str(e),
             "confidence": 0.0
         }
+
+
+# Check if running on Render with local tesseract
+render_tesseract_path = "/opt/render/project/src/.tesseract/usr/bin/tesseract"
+render_tessdata_path = "/opt/render/project/src/.tesseract/usr/share/tesseract-ocr/5/tessdata"
+
+if os.path.exists(render_tesseract_path):
+    pytesseract.pytesseract.tesseract_cmd = render_tesseract_path
+    os.environ["TESSDATA_PREFIX"] = render_tessdata_path
+elif shutil.which("tesseract"):
+    pytesseract.pytesseract.tesseract_cmd = shutil.which("tesseract")
