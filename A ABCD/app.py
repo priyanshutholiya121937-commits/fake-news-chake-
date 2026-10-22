@@ -237,7 +237,7 @@ def analyze_image_api():
             return jsonify({
                 "success": False,
                 "message": ocr_result.get('message', "No readable news text was detected. Please take a clearer photo.")
-            }), 422
+            }), 200
 
         extracted_text = ocr_result['extracted_text']
 
