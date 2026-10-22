@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from typing import Tuple, Dict, Any
+import pytesseract
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
 MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
@@ -104,80 +105,31 @@ def clean_ocr_text(raw_text: str) -> str:
     return text
 
 def extract_text_from_image(image_path: str) -> Dict[str, Any]:
-    """
-    Run OCR on image file using EasyOCR (with PyTesseract fallback).
-    Returns dict with extracted_text, raw_text, success, message, confidence.
-    """
-    valid, message = validate_image(image_path)
-    if not valid:
-        return {
-            "success": False,
-            "extracted_text": "",
-            "message": message,
-            "confidence": 0.0
-        }
-
     try:
-        gray, thresh = preprocess_image(image_path)
-        extracted_segments = []
-        confidences = []
-
-        # 1. Try EasyOCR
-        reader = get_easyocr_reader()
-        if reader is not None:
-            # Perform OCR on enhanced grayscale
-            results = reader.readtext(gray)
-            for (bbox, text, conf) in results:
-                if text.strip() and conf > 0.2:
-                    extracted_segments.append(text.strip())
-                    confidences.append(float(conf))
-
-            # If grayscale yielded few tokens, try thresholded image
-            if len(" ".join(extracted_segments).split()) < 5:
-                thresh_results = reader.readtext(thresh)
-                thresh_segments = [t.strip() for (_, t, c) in thresh_results if t.strip() and c > 0.2]
-                if len(" ".join(thresh_segments).split()) > len(" ".join(extracted_segments).split()):
-                    extracted_segments = thresh_segments
-                    confidences = [float(c) for (_, _, c) in thresh_results if c > 0.2]
-
-        # 2. Fallback to PyTesseract if EasyOCR produced nothing or was unavailable
-        if not extracted_segments:
-            try:
-                import pytesseract
-                # Test pytesseract
-                tess_text = pytesseract.image_to_string(gray)
-                if tess_text.strip():
-                    extracted_segments.append(tess_text.strip())
-                    confidences.append(0.75)
-            except Exception as tess_err:
-                pass
-
-        raw_combined = " ".join(extracted_segments)
-        cleaned_text = clean_ocr_text(raw_combined)
-        avg_confidence = round(float(np.mean(confidences)) * 100, 2) if confidences else 0.0
-
-        if not cleaned_text or len(cleaned_text.split()) < 3:
+        # Tesseract का उपयोग करके इमेज से टेक्स्ट निकालें
+        img = Image.open(image_path)
+        text = pytesseract.image_to_string(img)
+        cleaned_text = text.strip()
+        
+        if len(cleaned_text) > 5:
             return {
-                "success": False,
+                "success": True, 
                 "extracted_text": cleaned_text,
-                "raw_text": raw_combined,
-                "message": "No readable news text was detected. Please take a clearer photo with good lighting and centered text.",
-                "confidence": avg_confidence
+                "raw_text": text,
+                "confidence": 1.0,
+                "message": ""
             }
-
-        return {
-            "success": True,
-            "extracted_text": cleaned_text,
-            "raw_text": raw_combined,
-            "message": f"Successfully extracted {len(cleaned_text.split())} words from photo.",
-            "confidence": avg_confidence
-        }
-
+        else:
+            return {
+                "success": False, 
+                "message": "No readable news text was detected. Please take a clearer photo.",
+                "confidence": 0.0
+            }
+            
     except Exception as e:
+        print(f"OCR Error: {e}")
         return {
-            "success": False,
-            "extracted_text": "",
-            "raw_text": "",
-            "message": f"OCR extraction error: {str(e)}",
+            "success": False, 
+            "message": str(e),
             "confidence": 0.0
         }
