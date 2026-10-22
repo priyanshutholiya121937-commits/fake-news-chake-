@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 from typing import Tuple, Dict, Any
 import pytesseract
-from PIL import image
+from PIL import Image
 
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'webp'}
 MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024  # 5 MB
